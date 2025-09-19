@@ -2,6 +2,10 @@
 import React from "react";
 import Axios from "axios";
 import { useState } from "react";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 
 export default function Home(){
   // Function to shorten URL
@@ -22,7 +26,7 @@ export default function Home(){
       setShortUrl(`http://localhost:8080/${response.data}`);
       setError("");
     } catch (err){
-      setError("Failed to shorten URL");
+      setError(`Failed to shorten URL: ${(err as Error).message}`);
       setShortUrl("");
     } finally {
       setLoading(false);
@@ -30,9 +34,29 @@ export default function Home(){
   }
 
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      hi 
-    </div>
+    <Card>
+      <form onSubmit={handleSubmit}>
+        <Label htmlFor="url">Enter URL to shorten</Label>
+        <Input
+          id="url"
+          type="text"
+          value={longUrl}
+          onChange={(e) => setLongUrl(e.target.value)}
+        />
+        <Button type="submit" disabled={loading}>
+          {loading ? "Shortening..." : "Shorten URL"}
+        </Button>
+      </form>
+      {/* Replace the below div with a shad componenet*/}
+      <div>
+        {shortUrl && (
+          <div>
+            <Label>Shortened URL:</Label>
+            <a href={shortUrl}></a>
+          </div>
+        )}
+      </div>
+    </Card>
   );
 }
 
