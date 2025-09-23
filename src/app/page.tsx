@@ -34,29 +34,41 @@ export default function Home(){
   }
 
   return (
-    <Card>
-      <form onSubmit={handleSubmit}>
-        <Label htmlFor="url">Enter URL to shorten</Label>
-        <Input
-          id="url"
-          type="text"
-          value={longUrl}
-          onChange={(e) => setLongUrl(e.target.value)}
-        />
-        <Button type="submit" disabled={loading}>
-          {loading ? "Shortening..." : "Shorten URL"}
-        </Button>
-      </form>
-      {/* Replace the below div with a shad componenet*/}
-      <div>
-        {shortUrl && (
-          <div>
-            <Label>Shortened URL:</Label>
-            <a href={shortUrl}></a>
+    <div className="flex flex-col items-center bg-gray-400 justify-center min-h-screen">
+      <h1 className="text-4xl font-bold mb-8">URL Shortener</h1>
+      <Card className="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
+        <form onSubmit={handleSubmit} className="flex flex-col space-y-4 mb-6">
+          <div className="flex flex-col space-y-2">
+            <Label htmlFor="url">Enter URL to shorten</Label>
+            <Input
+              id="url"
+              type="text"
+              value={longUrl}
+              onChange={(e) => setLongUrl(e.target.value)}
+              className="w-full"
+              required
+            />
           </div>
-        )}
-      </div>
-    </Card>
+          <Button type="submit" disabled={loading} className="w-full">
+            {loading ? "Shortening..." : "Shorten URL"}
+          </Button>
+        </form>
+        {/* Replace the below div with a shad componenet*/}
+          {!shortUrl && ( // change back to shortUrl when nonnegation when ready
+            <div className="flex flex-col space-y-2">
+              <Label>Shortened URL:</Label>
+              <div className="flex items-center space-x-2">
+                <Input value={shortUrl} readOnly className="flex-grow"/>
+                <Button onClick={() => navigator.clipboard.writeText(shortUrl)
+                    .then(() => alert("Copied to clipboard"))
+                    .catch((err) => alert(`Failed to copy: ${err}`))
+                }>Copy</Button>
+              </div>
+            </div>
+          )}
+      </Card>
+      {error && <p className="text-red-500 mb-4">{error}</p>}
+    </div>
   );
 }
 
