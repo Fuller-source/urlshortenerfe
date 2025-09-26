@@ -11,6 +11,7 @@ export default function Home(){
   // Function to shorten URL
   const [longUrl, setLongUrl] = useState("");
   const [shortUrl, setShortUrl] = useState("");
+  const [copyMessage, setCopyMessage] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -34,40 +35,75 @@ export default function Home(){
   }
 
   return (
-    <div className="flex flex-col items-center bg-gray-400 justify-center min-h-screen">
-      <h1 className="text-4xl font-bold mb-8">URL Shortener</h1>
+    <div className="flex flex-col items-center bg-gray-100 justify-center min-h-screen">
+      <h1 className="text-4xl font-bold mb-8 mt-8">URL Shortener</h1>
+
+      {/* Main Card */}
       <Card className="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
-        <form onSubmit={handleSubmit} className="flex flex-col space-y-4 mb-6">
-          <div className="flex flex-col space-y-2">
-            <Label htmlFor="url">Enter URL to shorten</Label>
+        
+        {/* Form to input URL */}
+        <form onSubmit={handleSubmit} className="flex flex-col space-y-2 mt-4 p-4 bg-indigo-50 rounded-md">
+          <Label htmlFor="url" className="font-semibold text-gray-700">Enter URL to shorten</Label>
+          
+          {/* Input and Button are now in a horizontal row */}
+          <div className="flex items-center space-x-2">
             <Input
               id="url"
-              type="text"
+              type="url"
               value={longUrl}
               onChange={(e) => setLongUrl(e.target.value)}
-              className="w-full"
+              className="flex-grow cursor-text bg-white text-indigo-700 font-medium" // Takes up the remaining space
+              placeholder="e.g., https://www.google.com"
               required
             />
+            <Button 
+              type="submit" 
+              disabled={loading} 
+              className="w-24 bg-indigo-600 hover:bg-indigo-700 whitespace-nowrap">
+              {loading ? "Shortening..." : "Shorten URL"}
+            </Button>
           </div>
-          <Button type="submit" disabled={loading} className="w-full">
-            {loading ? "Shortening..." : "Shorten URL"}
-          </Button>
         </form>
-        {/* Replace the below div with a shad componenet*/}
-          {!shortUrl && ( // change back to shortUrl when nonnegation when ready
-            <div className="flex flex-col space-y-2">
+
+        {/* Display error message if any */}
+        {error && (
+          <div className="p-3 mb-4 text-center bg-red-100 text-red-700 rounded-md text-sm font-medium">
+            {error}
+          </div>
+        )}
+
+        {/* Shortened URL Output Section */}
+          {shortUrl && (
+            <div className="flex flex-col space-y-2 mt-4 p-4 bg-indigo-50 rounded-md">
               <Label>Shortened URL:</Label>
               <div className="flex items-center space-x-2">
-                <Input value={shortUrl} readOnly className="flex-grow"/>
-                <Button onClick={() => navigator.clipboard.writeText(shortUrl)
-                    .then(() => alert("Copied to clipboard"))
-                    .catch((err) => alert(`Failed to copy: ${err}`))
-                }>Copy</Button>
+                <Input 
+                  value={shortUrl}
+                  readOnly
+                  className="flex-grow cursor-text bg-white text-indigo-700 font-medium"
+                />
+                <Button 
+                  className="w-24 bg-indigo-600 hover:bg-indigo-700 whitespace-nowrap"
+                  onClick={() => navigator.clipboard.writeText(shortUrl)
+                    .then(() => {
+                      setCopyMessage("Copied!");
+                      setTimeout(() => setCopyMessage(""), 3000);
+                    })
+                }>
+                  Copy URL
+                </Button>
               </div>
+
+              {/* Copy confirmation message */}
+              {copyMessage && (
+                <p className="text-green-500 pt-1 text-sm font-medium animate-pulse">
+                  {copyMessage}
+                </p>
+              )}
+
             </div>
           )}
       </Card>
-      {error && <p className="text-red-500 mb-4">{error}</p>}
     </div>
   );
 }
