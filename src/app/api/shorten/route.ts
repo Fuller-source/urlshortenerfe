@@ -23,6 +23,7 @@ export async function POST(request: NextRequest) {
     return new NextResponse(shortKey, { status: 200 });
 
   } catch (error) {
+    console.error('Error in POST /shorten:', error);
     return new NextResponse('Internal Server Error', { status: 500 });
   }
 }
