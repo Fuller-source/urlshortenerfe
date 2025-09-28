@@ -1,21 +1,28 @@
-import { NextRequest, NextResponse } from "next/server"
+import { NextResponse, NextRequest } from 'next/server';
 
-export async function POST(req: NextRequest){
-    const requestText = await req.text();
-    const urlShortenBE = 'https://url-shortener-api-89bq.onrender.com/shorten' // This will need to change
-    
-    const response = await fetch(urlShortenBE, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'text/plain',
-        },
-        body: requestText,
-    })
+export async function POST(request: NextRequest) {
+  try {
+    const longUrl = await request.text();
+    const backendUrl = 'https://url-shortener-api-89bq.onrender.com/shorten';
 
-    if (!response.ok){
-        const errorText = await response.text()
-        return new Response(`External API error: ${errorText}`,  {status: response.status})
+    const backendResponse = await fetch(backendUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'text/plain',
+      },
+      body: longUrl,
+    });
+
+    if (!backendResponse.ok) {
+      const errorText = await backendResponse.text();
+      return new NextResponse(`Backend error: ${errorText}`, { status: backendResponse.status });
     }
 
-    return response
+    // Corrected Part: Read the text from the response and create a new one.
+    const shortKey = await backendResponse.text();
+    return new NextResponse(shortKey, { status: 200 });
+
+  } catch (error) {
+    return new NextResponse('Internal Server Error', { status: 500 });
+  }
 }
