@@ -24,7 +24,7 @@ export default function Home(){
           'Content-Type': 'text/plain',
         }
       });
-      setShortUrl(`https://url-shortener-api-89bq.onrender.com/shorten/${response.data}`);
+      setShortUrl(`https://url-shortener-api-89bq.onrender.com/${response.data}`);
       setError("");
     } catch (err){
       setError(`Failed to shorten URL: ${(err as Error).message}`);
