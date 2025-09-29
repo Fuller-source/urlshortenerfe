@@ -3,7 +3,7 @@ import { NextResponse, NextRequest } from 'next/server';
 export async function POST(request: NextRequest) {
   try {
     const longUrl = await request.text();
-    const backendUrl = 'https://url-shortener-api-89bq.onrender.com/shorten';
+    const backendUrl = 'https://url-shortener-api-8jbq.onrender.com/shorten';
 
     const backendResponse = await fetch(backendUrl, {
       method: 'POST',
